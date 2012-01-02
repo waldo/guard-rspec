@@ -88,11 +88,18 @@ describe Guard::RSpec::Runner do
             subject.run(["spec"], :cli => "--color --drb --fail-fast")
           end
 
-          it "sets progress formatter by default if no formatter is passed in CLI options to RSpec" do
+          it "sets progress formatter by default if empty CLI options passed to RSpec" do
             subject.should_receive(:system).with(
             "bundle exec rspec -f progress -r #{@lib_path.join('guard/rspec/formatters/notification_rspec.rb')} -f Guard::RSpec::Formatter::NotificationRSpec --out /dev/null --failure-exit-code 2 spec"
             ).and_return(true)
             subject.run(["spec"])
+          end
+
+          it "sets progress formatter by default if no formatter is passed in CLI options to RSpec" do
+            subject.should_receive(:system).with(
+            "bundle exec rspec --color -f progress -r #{@lib_path.join('guard/rspec/formatters/notification_rspec.rb')} -f Guard::RSpec::Formatter::NotificationRSpec --out /dev/null --failure-exit-code 2 spec"
+            ).and_return(true)
+            subject.run(["spec"], :cli => "--color")
           end
 
           it "respects formatter passed in CLI options to RSpec" do
